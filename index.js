@@ -12,6 +12,6 @@ app.listen(PORT, async () => {
 
 
 
-  
-  console.log(`App running... | Port: ${PORT} | Env: ${process.env.NODE_ENV} | Version: ${packageJson.version}` );
+
+  console.log(`App running...>> | Port: ${PORT} | Env: ${process.env.NODE_ENV} | Version: ${packageJson.version}` );
 });
