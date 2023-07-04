@@ -46,6 +46,12 @@ app.use("/api", routes);
 //   res.render("index");
 // });
 // Catch all handler for all other request.
+app.get("/version", async (req, res) => {
+
+  res.json({"name": 2}).end();
+});
+
+
 app.use("*", (req, res) => {
   try {
     res.sendFile(path.join(__dirname, "../public/index.html"));
