@@ -8,6 +8,18 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+const bot = require('./bot');
+const { webhookCallback } = require("grammy");
+
+// ################## BOT ###############################################
+
+if (process.env.NODE_ENV === "production") {
+  app.use(express.json());
+  app.use(webhookCallback(bot, "express"));
+
+}
+bot.start();
+
 // #############################################################################
 var options = {
   dotfiles: "ignore",
