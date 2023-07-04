@@ -14,5 +14,5 @@ app.listen(PORT, async () => {
   } catch (error) {
     console.error("Error reading file:", error);
   }
-  console.log(`App running: | Port: ${PORT} | Env: ${process.env.NODE_ENV} | Hash: ${hash.slice(0, 6)}` );
+  console.log(`App running: | Port: ${PORT} | Env: ${process.env.NODE_ENV} | Hash when start: ${hash.slice(0, 6)} ` );
 });
