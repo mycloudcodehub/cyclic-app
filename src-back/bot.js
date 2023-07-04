@@ -8,6 +8,8 @@ const bot = new Bot(process.env.TELEGRAM_TOKEN || "");
 // Handle the /yo command to greet the user
 bot.command("yo", (ctx) => ctx.reply(`Yo ${ctx.from.username}`));
 
+bot.command("srv", (ctx) => ctx.reply(`Yo ${ctx.from.username} ${process.env.NODE_ENV}`));
+
 // Handle the /effect command to apply text effects using an inline keyboard
 const allEffects = [
   { code: "w", label: "Monospace" },
