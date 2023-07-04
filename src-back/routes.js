@@ -12,9 +12,9 @@ app.use(express.urlencoded({ extended: true }));
 var options = {
   dotfiles: "ignore",
   etag: false,
-  extensions: ["css", "js", "ico", "jpg", "jpeg", "png", "svg"],
-  // index: ["index.html"],
-  index: false,
+  extensions: ["html", "css", "js", "ico", "jpg", "jpeg", "png", "svg"],
+  index: ["index.html"],
+  // index: false,
   maxAge: "1m",
   redirect: false,
 };
@@ -42,9 +42,9 @@ const routes = require("./api/crud")(router, {});
 app.use("/api", routes);
 
 // site
-app.get("/", async function (req, res) {
-  res.render("index");
-});
+// app.get("/", async function (req, res) {
+//   res.render("index");
+// });
 // Catch all handler for all other request.
 app.use("*", (req, res) => {
   try {
