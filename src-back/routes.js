@@ -13,7 +13,8 @@ const { webhookCallback } = require("grammy");
 
 // ################## BOT ###############################################
 
-const webhookPath = '/telegram-webhook'; // The path where Telegram will send updates
+// const webhookPath = '/telegram-webhook'; // The path where Telegram will send updates
+const webhookPath = process.env.TELEGRAM_WEBHOOK; // The path where Telegram will send updates
 
 if (process.env.NODE_ENV === "production") {
   app.use(express.json());
