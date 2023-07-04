@@ -1,5 +1,7 @@
 // routes.js
 const express = require("express");
+const engine = require('ejs');
+const path = require('path');
 const CyclicDb = require("@cyclic.sh/dynamodb");
 const db = CyclicDb(process.env.CYCLIC_DB);
 
@@ -8,16 +10,15 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const bot = require("./bot");
-const { webhookCallback } = require("grammy");
 
 // ################## BOT ###############################################
 
-// const webhookPath = '/telegram-webhook'; // The path where Telegram will send updates
+const bot = require("./bot");
+const { webhookCallback } = require("grammy");
 const webhookPath = process.env.TELEGRAM_WEBHOOK; // The path where Telegram will send updates
 
 if (process.env.NODE_ENV === "production") {
-  app.use(express.json());
+  // app.use(express.json());
   app.use(webhookPath, webhookCallback(bot));
 } else {
   bot.start();
