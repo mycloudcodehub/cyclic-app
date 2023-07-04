@@ -13,7 +13,14 @@ const { webhookCallback } = require("grammy");
 
 // ################## BOT ###############################################
 
+const webhookPath = '/telegram-webhook'; // The path where Telegram will send updates
 
+if (process.env.NODE_ENV === "production") {
+  app.use(express.json());
+  app.use(webhookPath, webhookCallback(bot));
+} else {
+  bot.start();
+}
 
 // #############################################################################
 var options = {
@@ -85,15 +92,9 @@ app.get("/:col", async (req, res) => {
 // #############################################################################
 
 // Catch all handler for all other request.
-// app.use("*", (req, res) => {
-//   res.json({ msg: "No way" }).end();
-// });
+app.use("*", (req, res) => {
+  res.json({ msg: "No way" }).end();
+});
 
-if (process.env.NODE_ENV === "production") {
-  app.use(express.json());
-  app.use(webhookCallback(bot, "express"));
-} else {
-  bot.start();
-}
 // Export the app instance
 module.exports = app;
