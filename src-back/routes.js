@@ -25,7 +25,6 @@ app.engine("html", engine.__express);
 app.set("views", path.join(__dirname, "../public"));
 app.set("view engine", "html");
 
-
 // bot
 const bot = require("./bot");
 const { webhookCallback } = require("grammy");
@@ -37,35 +36,22 @@ if (process.env.NODE_ENV === "production") {
   bot.start();
 }
 
-
 // api
 const router = express.Router();
 const routes = require("./api/crud")(router, {});
 app.use("/api", routes);
 
-
 // site
 app.get("/", async function (req, res) {
-  let hash;
-  try {
-    hash = await fs.promises.readFile(".git/refs/heads/master");
-    console.log(hash.toString().trim());
-  } catch (error) {
-    console.error("Error reading file:", error);
-  }
-
-  res.render("index", { hash });
+  res.render("index");
 });
 // Catch all handler for all other request.
 app.use("*", (req, res) => {
-  console.log("serve with no match");
   try {
     res.sendFile(path.join(__dirname, "../public/index.html"));
   } catch (error) {
     res.json({ success: false, message: "Something went wrong" });
   }
 });
-
-
 
 module.exports = app;
