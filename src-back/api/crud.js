@@ -6,6 +6,12 @@ var packageJson = require('./package.json');
 module.exports = (app) => {
   // Create or Update an item
 
+  app.get("/version", (req, res) => {
+
+    res.json({"name": 2}).end();
+  });
+
+
   app.post("/:col/:key", async (req, res) => {
     console.log(req.body);
 
@@ -48,7 +54,7 @@ module.exports = (app) => {
     console.log(JSON.stringify(item, null, 2));
     res.json(item).end();
   });
-  
+
 
   app.get("/:col", async (req, res) => {
     const col = req.params.col;
