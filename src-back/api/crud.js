@@ -6,7 +6,7 @@ var packageJson = require('./package.json');
 module.exports = (app) => {
   // Create or Update an item
 
-  app.get("/version", (req, res) => {
+  app.get("/app/v/f", (req, res) => {
 
     res.json({"name": 2}).end();
   });
