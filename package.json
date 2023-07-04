@@ -1,12 +1,12 @@
 {
   "name": "cyclic-app",
-  "version": "1.0.0",
+  "version": "1.0.26",
   "description": "",
   "main": "index.js",
   "scripts": {
     "dev": "env-cmd nodemon index.js",
     "repl": "env-cmd node",
-    "version": "npm version patch"
+    "version": "npm --no-git-tag-version version patch "
   },
   "keywords": [],
   "author": "Faisal Md <faisalindex@gmail.com>",
