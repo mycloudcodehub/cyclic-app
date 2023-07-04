@@ -15,10 +15,10 @@ if (process.env.NODE_ENV === "production") {
   app.use(express.json());
   app.use(webhookCallback(bot, "express"));
 
-  bot.start();
+  // bot.start();
 
   app.listen(PORT, () => {
-    console.log(`||Webligh runing at .... ${PORT} on ${process.env.NODE_ENV}` );
+    console.log(`|3|Webligh runing at .... ${PORT} on ${process.env.NODE_ENV}` );
   });
 } else {
   // Use Long Polling for development
