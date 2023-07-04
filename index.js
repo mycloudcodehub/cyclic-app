@@ -18,12 +18,12 @@ if (process.env.NODE_ENV === "production") {
   bot.start();
 
   app.listen(PORT, () => {
-    console.log(`Webligh runing at .... ${PORT} on ${process.env.NODE_ENV}` );
+    console.log(`||Webligh runing at .... ${PORT} on ${process.env.NODE_ENV}` );
   });
 } else {
   // Use Long Polling for development
   bot.start();
   app.listen(PORT, () => {
-    console.log(`Webligh runing at .... ${PORT} on ${process.env.NODE_ENV}` );
+    console.log(`||Webligh runing at .... ${PORT} on ${process.env.NODE_ENV}` );
   });
 }
