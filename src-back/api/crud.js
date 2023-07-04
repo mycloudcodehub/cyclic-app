@@ -1,6 +1,5 @@
 const CyclicDb = require("@cyclic.sh/dynamodb");
 const db = CyclicDb(process.env.CYCLIC_DB);
-var packageJson = require("./package.json");
 
 module.exports = (app) => {
   // Create or Update an item
