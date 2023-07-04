@@ -14,6 +14,8 @@ if (process.env.NODE_ENV === "production") {
   // Use Webhooks for the production server
   app.use(express.json());
   app.use(webhookCallback(bot, "express"));
+  
+  bot.start();
 
   app.listen(PORT, () => {
     console.log(`Webligh runing at .... ${PORT}`);
