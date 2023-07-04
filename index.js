@@ -1,13 +1,7 @@
 const app = require('./src-back/routes');
-// const { webhookCallback } = require("grammy");
 const bot = require('./src-back/bot');
 
-
-
 const PORT = process.env.PORT || 3000;
-
-
-
 
 
 app.listen(PORT, () => {

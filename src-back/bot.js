@@ -1,4 +1,4 @@
-const { Bot, InlineKeyboard, webhookCallback } = require("grammy");
+const { Bot, InlineKeyboard } = require("grammy");
 const { chunk } = require("lodash");
 const { applyTextEffect } = require("./textEffects");
 
