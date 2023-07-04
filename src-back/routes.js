@@ -16,7 +16,6 @@ const { webhookCallback } = require("grammy");
 if (process.env.NODE_ENV === "production") {
   app.use(express.json());
   app.use(webhookCallback(bot, "express"));
-
 }
 bot.start();
 
