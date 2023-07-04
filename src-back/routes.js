@@ -8,7 +8,7 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const bot = require('./bot');
+const bot = require("./bot");
 const { webhookCallback } = require("grammy");
 
 // ################## BOT ###############################################
@@ -16,8 +16,9 @@ const { webhookCallback } = require("grammy");
 if (process.env.NODE_ENV === "production") {
   app.use(express.json());
   app.use(webhookCallback(bot, "express"));
+} else {
+  bot.start();
 }
-bot.start();
 
 // #############################################################################
 var options = {
