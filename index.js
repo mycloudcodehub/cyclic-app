@@ -1,5 +1,5 @@
-const express = require('express');
 const { webhookCallback } = require("grammy");
+const express = require('express');
 const bot = require('./src-back/bot');
 const app = require('./src-back/routes');
 
@@ -7,8 +7,6 @@ const app = require('./src-back/routes');
 
 const PORT = process.env.PORT || 3000;
 
-// Start the bot server
-// bot.start();
 
 
 // Start the server
