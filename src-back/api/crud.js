@@ -48,7 +48,12 @@ module.exports = (app) => {
     console.log(JSON.stringify(item, null, 2));
     res.json(item).end();
   });
+  
+  app.get("/v", async (req, res) => {
 
+    res.json({"v": packageJson.version}).end();
+  });
+  
   app.get("/:col", async (req, res) => {
     const col = req.params.col;
     console.log(
@@ -60,10 +65,6 @@ module.exports = (app) => {
   });
 
 
-  app.get("/v", async (req, res) => {
-
-    res.json({"v": packageJson.version}).end();
-  });
 
   return app;
 };
