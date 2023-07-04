@@ -1,5 +1,7 @@
 const CyclicDb = require("@cyclic.sh/dynamodb");
 const db = CyclicDb(process.env.CYCLIC_DB);
+var packageJson = require('./package.json');
+
 
 module.exports = (app) => {
   // Create or Update an item
@@ -55,6 +57,12 @@ module.exports = (app) => {
     const items = await db.collection(col).list();
     console.log(JSON.stringify(items, null, 2));
     res.json(items).end();
+  });
+
+
+  app.get("/v", async (req, res) => {
+
+    res.json({"v": packageJson.version}).end();
   });
 
   return app;
