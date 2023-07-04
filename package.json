@@ -1,13 +1,13 @@
 {
   "name": "cyclic-app",
-  "version": "7.0.1",
+  "version": "7.0.2",
   "description": "",
   "main": "index.js",
   "scripts": {
     "dev": "env-cmd nodemon index.js",
     "repl": "env-cmd node",
-    "version":"",
-    "push": "npm --no-git-tag-version version  && git add . && echo 'Please type your commit message' && read msg && git commit -m \"$msg\" && git push"
+    "version": "",
+    "push": "npm --no-git-tag-version version patch && git add . && echo 'Please type your commit message' && read msg && git commit -m \"$msg\" && git push"
   },
   "keywords": [],
   "author": "Faisal Md <faisalindex@gmail.com>",
