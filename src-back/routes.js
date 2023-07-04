@@ -1,22 +1,35 @@
 // routes.js
 const express = require("express");
-const engine = require('ejs');
-const path = require('path');
-const CyclicDb = require("@cyclic.sh/dynamodb");
-const db = CyclicDb(process.env.CYCLIC_DB);
+const engine = require("ejs");
+const fs = require("fs");
+const path = require("path");
 
 const app = express();
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// static
+var options = {
+  dotfiles: "ignore",
+  etag: false,
+  extensions: ["css", "js", "ico", "jpg", "jpeg", "png", "svg"],
+  // index: ["index.html"],
+  index: false,
+  maxAge: "1m",
+  redirect: false,
+};
+app.use(express.static("public", options));
 
-// ################## BOT ###############################################
+// ejs
+app.engine("html", engine.__express);
+app.set("views", path.join(__dirname, "../public"));
+app.set("view engine", "html");
 
+
+// bot
 const bot = require("./bot");
 const { webhookCallback } = require("grammy");
 const webhookPath = process.env.TELEGRAM_WEBHOOK; // The path where Telegram will send updates
-
 if (process.env.NODE_ENV === "production") {
   // app.use(express.json());
   app.use(webhookPath, webhookCallback(bot));
@@ -24,79 +37,35 @@ if (process.env.NODE_ENV === "production") {
   bot.start();
 }
 
-// #############################################################################
-var options = {
-  dotfiles: "ignore",
-  etag: false,
-  extensions: ["htm", "html", "css", "js", "ico", "jpg", "jpeg", "png", "svg"],
-  index: ["index.html"],
-  maxAge: "1m",
-  redirect: false,
-};
-app.use(express.static("public", options));
-// #############################################################################
 
-// Create or Update an item
+// api
+const router = express.Router();
+const routes = require("./api/crud")(router, {});
+app.use("/api", routes);
 
-app.post("/:col/:key", async (req, res) => {
-  console.log(req.body);
 
-  const col = req.params.col;
-  const key = req.params.key;
-  console.log(
-    `from collection: ${col} delete key: ${key} with params ${JSON.stringify(
-      req.params
-    )}`
-  );
-  const item = await db.collection(col).set(key, req.body);
-  console.log(JSON.stringify(item, null, 2));
-  res.json(item).end();
+// site
+app.get("/", async function (req, res) {
+  let hash;
+  try {
+    hash = await fs.promises.readFile(".git/refs/heads/master");
+    console.log(hash.toString().trim());
+  } catch (error) {
+    console.error("Error reading file:", error);
+  }
+
+  res.render("index", { hash });
 });
-
-// Delete an item
-app.delete("/:col/:key", async (req, res) => {
-  const col = req.params.col;
-  const key = req.params.key;
-  console.log(
-    `from collection: ${col} delete key: ${key} with params ${JSON.stringify(
-      req.params
-    )}`
-  );
-  const item = await db.collection(col).delete(key);
-  console.log(JSON.stringify(item, null, 2));
-  res.json(item).end();
-});
-
-// Get a single item
-app.get("/:col/:key", async (req, res) => {
-  const col = req.params.col;
-  const key = req.params.key;
-  console.log(
-    `from collection: ${col} get key: ${key} with params ${JSON.stringify(
-      req.params
-    )}`
-  );
-  const item = await db.collection(col).get(key);
-  console.log(JSON.stringify(item, null, 2));
-  res.json(item).end();
-});
-
-// Get a full listing
-app.get("/:col", async (req, res) => {
-  const col = req.params.col;
-  console.log(
-    `list collection: ${col} with params: ${JSON.stringify(req.params)}`
-  );
-  const items = await db.collection(col).list();
-  console.log(JSON.stringify(items, null, 2));
-  res.json(items).end();
-});
-// #############################################################################
-
 // Catch all handler for all other request.
 app.use("*", (req, res) => {
-  res.json({ msg: "No way" }).end();
+  console.log("serve with no match");
+  try {
+    res.sendFile(path.join(__dirname, "../public/index.html"));
+  } catch (error) {
+    res.json({ success: false, message: "Something went wrong" });
+  }
 });
 
-// Export the app instance
+
+
 module.exports = app;

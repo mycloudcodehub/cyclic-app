@@ -1,9 +1,18 @@
 const app = require('./src-back/routes');
 const bot = require('./src-back/bot');
+const fs = require("fs");
+
 
 const PORT = process.env.PORT || 3000;
 
 
-app.listen(PORT, () => {
-  console.log(`| Bot work |Webligh runing at .... ${PORT} on ${process.env.NODE_ENV}` );
+app.listen(PORT, async () => {
+  let hash;
+  try {
+    hash = await fs.promises.readFile(".git/refs/heads/master");
+    console.log(hash.toString().trim());
+  } catch (error) {
+    console.error("Error reading file:", error);
+  }
+  console.log(`App running: | Port: ${PORT} | Env: ${process.env.NODE_ENV} | Hash: ${hash.slice(0, 6)}` );
 });
