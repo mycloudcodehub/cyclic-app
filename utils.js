@@ -9,109 +9,114 @@ let package = {
 };
 
 // =============================================
-const readline = require("readline");
-const { exec } = require("child_process");
-const fs = require("fs");
-const semver = require("semver");
 
 // const name = await prompt('Enter your name: ');
 // console.log(`Hello, ${name}!`);
-function prompt(question) {
-  const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout,
-  });
 
-  return new Promise((resolve) => {
-    rl.question(question, (answer) => {
-      rl.close();
-      resolve(answer);
-    });
-  });
-}
 
-function runCommand(command) {
-  return new Promise((resolve, reject) => {
-    exec(command, (error, stdout, stderr) => {
-      if (error) {
-        console.error(`Error occurred while running command: ${error.message}`);
-        reject(error);
-      } else {
-        console.log(stdout);
-        resolve();
-      }
-    });
-  });
-}
 
-async function version(type = "patch") {
-  if (fs.existsSync("./package.json")) {
-    var package = require("./package.json");
-    let currentVersion = package.version;
-    let newVersion = semver.inc(package.version, type);
-    package.version = newVersion;
-    fs.writeFileSync("./package.json", JSON.stringify(package, null, 2));
 
-    console.log("Version updated", currentVersion, "=>", newVersion);
+
+const util = require('util');
+const exec = util.promisify(require('child_process').exec);
+const fs = require('fs');
+const readline = require("readline");
+
+
+async function runCommand(command) {
+  try {
+    const { stdout } = await exec(command);
+    return stdout.trim();
+  } catch (error) {
+    throw new Error(`Command execution failed: ${error.message}`);
   }
 }
 
-async function getModifiedFiles() {
-    const command = 'git diff --name-only --cached';
-    return new Promise((resolve, reject) => {
-      exec(command, (error, stdout, stderr) => {
-        if (error) {
-          console.error(`Error occurred while retrieving modified files: ${error.message}`);
-          reject(error);
-        } else {
-          const files = stdout.trim().split('\n');
-          resolve(files);
-        }
+function prompt(question) {
+    const rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout,
+    });
+  
+    return new Promise((resolve) => {
+      rl.question(question, (answer) => {
+        rl.close();
+        resolve(answer);
       });
     });
-  }
-  
-  async function gitCommit(message) {
+}
+
+async function runQuasarBuild() {
     try {
-      const modifiedFiles = await getModifiedFiles();
-      const filesMessage = modifiedFiles.length > 0 ? `\n\nModified files:\n${modifiedFiles.join('\n')}` : '';
-      const commitMessage = `${message}${filesMessage}`;
-    //   const command = `git commit -m "${commitMessage}"`;
-    //   await runCommand(command);
-      console.log(commitMessage);
+      console.log('Running Quasar build...');
+      await exec('quasar build');
+      console.log('Quasar build completed successfully.');
     } catch (error) {
-      console.error('Git commit failed:', error);
+      console.error('Quasar build failed:', error);
+      throw error;
     }
   }
 
-async function commit() {
-  const message = await prompt("Enter Commit Msg: ");
+function incrementVersion(packageJsonPath) {
+  const packageJson = require(packageJsonPath);
+  const versionParts = packageJson.version.split('.');
+  versionParts[2] = parseInt(versionParts[2], 10) + 1;
+  packageJson.version = versionParts.join('.');
+  fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2));
+  return packageJson.version;
+}
 
-  const command = `git commit -m "${message}"`;
+async function gitCommit(message) {
   try {
-    await runCommand(command);
-    console.log("Git commit completed successfully.");
+    const statusOutput = await runCommand('git status --porcelain');
+    if (!statusOutput) {
+      console.log('No changes to commit.');
+      return;
+    }
+
+    const packageJsonPath = './package.json';
+    const newVersion = incrementVersion(packageJsonPath);
+    console.log(`Version incremented to ${newVersion}`);
+
+    await runCommand('git add -A');
+
+    const modifiedFiles = await runCommand('git diff --name-only --diff-filter=M');
+    const deletedFiles = await runCommand('git diff --name-only --diff-filter=D');
+    const addedFiles = await runCommand('git diff --name-only --diff-filter=A');
+    const createdFiles = await runCommand('git ls-files --others --exclude-standard');
+
+    const filesMessage = [];
+    if (modifiedFiles) {
+      filesMessage.push('Modified files:\n' + modifiedFiles);
+    }
+    if (deletedFiles) {
+      filesMessage.push('Deleted files:\n' + deletedFiles);
+    }
+    if (addedFiles) {
+      filesMessage.push('Added files:\n' + addedFiles);
+    }
+    if (createdFiles) {
+      filesMessage.push('Created files:\n' + createdFiles);
+    }
+
+    const commitMessage = `${message}\n\n${filesMessage.join('\n\n')}`;
+    const commitCommand = `git commit -m "${commitMessage}"`;
+    await runCommand(commitCommand);
+
+    const tagCommand = `git tag -a ${newVersion} -m "${newVersion}"`;
+    await runCommand(tagCommand);
+
+    console.log('Git commit and tag completed successfully.');
   } catch (error) {
-    console.error("Git commit failed:", error);
+    console.error('Git commit and tag failed:', error);
   }
 }
 
-async function add() {
-  const command = `git add .`;
+// Example usage:
+async function main() {
   try {
-    await runCommand(command);
-    console.log("Git commit completed successfully.");
+    await gitCommit('Update features');
   } catch (error) {
-    console.error("Git commit failed:", error);
+    console.error('An error occurred:', error);
   }
 }
-
-// Export the functions
-module.exports = {
-  version,
-  commit,
-  add,
-  prompt,
-  runCommand,
-  gitCommit
-};
