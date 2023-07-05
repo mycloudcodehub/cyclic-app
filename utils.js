@@ -30,7 +30,7 @@ async function runCommand(command, options = {}) {
   }
 }
 
-function prompt(question) {
+async function prompt(question) {
   const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
@@ -54,7 +54,8 @@ async function hasChangesInSrcFront() {
 }
 
 async function runQuasarBuild() {
-  if (hasChangesInSrcFront()) {
+  const changedYesNo = await hasChangesInSrcFront();
+  if (changedYesNo) {
     try {
       console.log("Running Quasar build...");
       await runCommand("quasar build", { cwd: "src-front" });
@@ -119,7 +120,9 @@ async function buildAddCommitVersioningPush() {
     const deletedFiles = await runCommand(
       "git diff --name-only --diff-filter=D --cached"
     );
-    const addedFiles = await runCommand("git diff --name-only --diff-filter=A --cached");
+    const addedFiles = await runCommand(
+      "git diff --name-only --diff-filter=A --cached"
+    );
     // const createdFiles = await runCommand(
     //   "git ls-files --others --exclude-standard --cached"
     // );
@@ -138,8 +141,8 @@ async function buildAddCommitVersioningPush() {
     //   filesMessage.push("Created files:\n" + createdFiles);
     // }
 
-    const p = await runCommand('pwd')
-    console.log("Loging..",filesMessage, p)
+    const p = await runCommand("pwd");
+    console.log("Loging..", filesMessage, p);
 
     const message = await prompt("Enter Commit Msg: ");
     const formatMsg = `Update #${newVersion} : ${message}`;
