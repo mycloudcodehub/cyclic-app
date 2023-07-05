@@ -23,7 +23,11 @@ const exec = util.promisify(require("child_process").exec);
 async function runCommand(command, options = {}) {
   const { cwd, stdio = "inherit" } = options;
   try {
-    const { stdout } = await exec(command, { cwd, stdio });
+    const { stdout, stderr } = await exec(command, { cwd, stdio });
+    if (stdio === "inherit") {
+      process.stdout.write(stdout);
+      process.stderr.write(stderr);
+    }
     return stdout.trim();
   } catch (error) {
     throw new Error(`Command execution failed: ${error.message}`);
