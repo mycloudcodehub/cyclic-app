@@ -20,6 +20,14 @@ const readFileAsync = util.promisify(fs.readFile);
 const writeFileAsync = util.promisify(fs.writeFile);
 const exec = util.promisify(require("child_process").exec);
 
+
+const colors = {
+    reset: "\x1b[0m",
+    red: "\x1b[31m",
+    green: "\x1b[32m",
+    yellow: "\x1b[33m",
+  };
+
 async function runCommand(command, options = {}) {
   const { cwd, stdio = "inherit" } = options;
   try {
@@ -61,16 +69,16 @@ async function runQuasarBuild() {
   const changedYesNo = await hasChangesInSrcFront();
   if (changedYesNo) {
     try {
-      console.log("Running Quasar build...");
+      console.log(`${colors.green}Running Quasar build...${colors.reset}`);
       await runCommand("quasar build", { cwd: "src-front" });
-      console.log("Quasar build completed successfully.");
+      console.log(`${colors.green}Quasar build completed successfully.${colors.reset}`);
     } catch (error) {
-      console.error("Quasar build failed:", error);
+      console.error(`${colors.red}Quasar build failed:${colors.reset}`, error);
       throw error;
     }
   } else {
     console.log(
-      "No changes detected in src-front folder. Skipping Quasar build."
+      `${colors.green}No changes detected in src-front folder. Skipping Quasar build.${colors.reset}`
     );
   }
 }
@@ -93,10 +101,10 @@ async function incrementVersion(packageJsonPath) {
       "utf8"
     );
 
-    console.log(`Package version incremented to ${newVersion}`);
+    console.log(`${colors.green}Package version incremented to ${newVersion}${colors.reset}`);
     return newVersion;
   } catch (error) {
-    console.error("Error incrementing package version:", error);
+    console.error(`${colors.red}Error incrementing package version:${colors.reset}`, error);
     throw error;
   }
 }
@@ -105,7 +113,7 @@ async function buildAddCommitVersioningPush() {
   try {
     const statusOutput = await runCommand("git status --porcelain");
     if (!statusOutput) {
-      console.log("No changes to commit.");
+      console.log(`${colors.green}No changes to commit.${colors.reset}`);
       return;
     }
     // run quasar build
@@ -114,7 +122,6 @@ async function buildAddCommitVersioningPush() {
 
     const packageJsonPath = "./package.json";
     const newVersion = await incrementVersion(packageJsonPath);
-    console.log(`Version incremented to ${newVersion}`);
 
     await runCommand("git add -A");
 
@@ -145,10 +152,7 @@ async function buildAddCommitVersioningPush() {
     //   filesMessage.push("Created files:\n" + createdFiles);
     // }
 
-    const p = await runCommand("pwd");
-    console.log("Loging..", filesMessage, p);
-
-    const message = await prompt("Enter Commit Msg: ");
+    const message = await prompt(`${colors.green}Enter Commit Msg: ${colors.reset}`);
     const formatMsg = `Update #${newVersion} : ${message}`;
 
     const commitMessage = `${formatMsg}\n\n${filesMessage.join("\n\n")}`;
@@ -158,13 +162,13 @@ async function buildAddCommitVersioningPush() {
     const tagCommand = `git tag -a ${newVersion} -m "${newVersion}"`;
     await runCommand(tagCommand);
 
-    console.log("Git commit and tag completed successfully.");
+    console.log(`${colors.green}Git commit and tag completed successfully.${colors.reset}`);
 
     await runCommand(`git push origin master --follow-tags`);
 
-    console.log("'Git push origin master' completed successfully.");
+    console.log(`${colors.green}'Git push origin master' completed successfully.${colors.reset}`);
   } catch (error) {
-    console.error("Git commit and tag failed:", error);
+    console.error(`${colors.red}Git commit and tag failed:${colors.reset}`, error);
   }
 }
 
