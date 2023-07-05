@@ -139,7 +139,7 @@ async function buildAddCommitVersioningPush() {
     }
 
     const message = await prompt("Enter Commit Msg: ");
-    const formatMsg = `Update #${newVersion}: ${message}`;
+    const formatMsg = `Update #${newVersion} : ${message}`;
 
     const commitMessage = `${formatMsg}\n\n${filesMessage.join("\n\n")}`;
     const commitCommand = `git commit -m "${commitMessage}"`;
