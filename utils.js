@@ -155,6 +155,10 @@ async function buildAddCommitVersioningPush() {
     await runCommand(tagCommand);
 
     console.log("Git commit and tag completed successfully.");
+
+    await runCommand(`git push origin master --follow-tags`);
+
+    console.log("'Git push origin master' completed successfully.");
   } catch (error) {
     console.error("Git commit and tag failed:", error);
   }
