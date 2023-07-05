@@ -108,7 +108,7 @@ async function buildAddCommitVersioningPush() {
     await runQuasarBuild();
 
     const packageJsonPath = "./package.json";
-    const newVersion = incrementVersion(packageJsonPath);
+    const newVersion = await incrementVersion(packageJsonPath);
     console.log(`Version incremented to ${newVersion}`);
 
     await runCommand("git add -A");
