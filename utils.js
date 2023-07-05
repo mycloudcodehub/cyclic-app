@@ -174,7 +174,7 @@ async function buildAddCommitVersioningPush() {
       `${colors.green}Git commit and tag completed successfully.${colors.reset}`
     );
 
-    await runCommand(`git push origin master --follow-tags`);
+    await runCommand(`git push origin master --follow-tags`, {stdio:"inherit"});
 
     console.log(
       `${colors.green}'Git push origin master' completed successfully.${colors.reset}`
