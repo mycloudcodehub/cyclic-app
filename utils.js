@@ -20,16 +20,15 @@ const readFileAsync = util.promisify(fs.readFile);
 const writeFileAsync = util.promisify(fs.writeFile);
 const exec = util.promisify(require("child_process").exec);
 
-
 const colors = {
-    reset: "\x1b[0m",
-    red: "\x1b[31m",
-    green: "\x1b[32m",
-    yellow: "\x1b[33m",
-  };
+  reset: "\x1b[0m",
+  red: "\x1b[31m",
+  green: "\x1b[32m",
+  yellow: "\x1b[33m",
+};
 
 async function runCommand(command, options = {}) {
-  const { cwd, stdio = "inherit" } = options;
+  const { cwd, stdio = "pipe" } = options;
   try {
     const { stdout, stderr } = await exec(command, { cwd, stdio });
     if (stdio === "inherit") {
@@ -71,7 +70,9 @@ async function runQuasarBuild() {
     try {
       console.log(`${colors.green}Running Quasar build...${colors.reset}`);
       await runCommand("quasar build", { cwd: "src-front" });
-      console.log(`${colors.green}Quasar build completed successfully.${colors.reset}`);
+      console.log(
+        `${colors.green}Quasar build completed successfully.${colors.reset}`
+      );
     } catch (error) {
       console.error(`${colors.red}Quasar build failed:${colors.reset}`, error);
       throw error;
@@ -101,10 +102,15 @@ async function incrementVersion(packageJsonPath) {
       "utf8"
     );
 
-    console.log(`${colors.green}Package version incremented to ${newVersion}${colors.reset}`);
+    console.log(
+      `${colors.green}Package version incremented to ${newVersion}${colors.reset}`
+    );
     return newVersion;
   } catch (error) {
-    console.error(`${colors.red}Error incrementing package version:${colors.reset}`, error);
+    console.error(
+      `${colors.red}Error incrementing package version:${colors.reset}`,
+      error
+    );
     throw error;
   }
 }
@@ -152,7 +158,9 @@ async function buildAddCommitVersioningPush() {
     //   filesMessage.push("Created files:\n" + createdFiles);
     // }
 
-    const message = await prompt(`${colors.green}Enter Commit Msg: ${colors.reset}`);
+    const message = await prompt(
+      `${colors.green}Enter Commit Msg: ${colors.reset}`
+    );
     const formatMsg = `Update #${newVersion} : ${message}`;
 
     const commitMessage = `${formatMsg}\n\n${filesMessage.join("\n\n")}`;
@@ -162,13 +170,20 @@ async function buildAddCommitVersioningPush() {
     const tagCommand = `git tag -a ${newVersion} -m "${newVersion}"`;
     await runCommand(tagCommand);
 
-    console.log(`${colors.green}Git commit and tag completed successfully.${colors.reset}`);
+    console.log(
+      `${colors.green}Git commit and tag completed successfully.${colors.reset}`
+    );
 
     await runCommand(`git push origin master --follow-tags`);
 
-    console.log(`${colors.green}'Git push origin master' completed successfully.${colors.reset}`);
+    console.log(
+      `${colors.green}'Git push origin master' completed successfully.${colors.reset}`
+    );
   } catch (error) {
-    console.error(`${colors.red}Git commit and tag failed:${colors.reset}`, error);
+    console.error(
+      `${colors.red}Git commit and tag failed:${colors.reset}`,
+      error
+    );
   }
 }
 
