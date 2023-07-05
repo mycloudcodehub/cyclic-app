@@ -33,8 +33,3 @@ curl -i https://localhost:3000/animals/lassy
 curl -i -XDELETE https://localhost:3000/animals/lassy
 ```
 
-
-asdifi 
-
-
-333

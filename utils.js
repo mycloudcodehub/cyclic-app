@@ -120,9 +120,9 @@ async function buildAddCommitVersioningPush() {
       "git diff --name-only --diff-filter=D --cached"
     );
     const addedFiles = await runCommand("git diff --name-only --diff-filter=A --cached");
-    const createdFiles = await runCommand(
-      "git ls-files --others --exclude-standard --cached"
-    );
+    // const createdFiles = await runCommand(
+    //   "git ls-files --others --exclude-standard --cached"
+    // );
 
     const filesMessage = [];
     if (modifiedFiles) {
@@ -134,9 +134,9 @@ async function buildAddCommitVersioningPush() {
     if (addedFiles) {
       filesMessage.push("Added files:\n" + addedFiles);
     }
-    if (createdFiles) {
-      filesMessage.push("Created files:\n" + createdFiles);
-    }
+    // if (createdFiles) {
+    //   filesMessage.push("Created files:\n" + createdFiles);
+    // }
 
     const p = await runCommand('pwd')
     console.log("Loging..",filesMessage, p)
