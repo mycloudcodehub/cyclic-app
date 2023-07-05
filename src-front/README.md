@@ -18,6 +18,8 @@ quasar dev
 ### Build the app for production
 ```bash
 quasar build
+
+
 ```
 
 ### Customize the configuration

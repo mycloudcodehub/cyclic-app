@@ -1,12 +1,12 @@
 {
   "name": "cyclic-app",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "description": "",
   "main": "index.js",
   "scripts": {
     "dev": "env-cmd -e dev nodemon index.js",
     "repl": "env-cmd node",
-    "push": "node -r ./utils.js -e 'require(\"./utils\").version()'",
+    "push": "node -r ./utils.js -e 'require(\"./utils\").buildAddCommitVersioningPush()'",
     "add": "node -r ./utils.js -e 'require(\"./utils\").add()'",
     "commit": "node -r ./utils.js -e 'require(\"./utils\").gitCommit()'"
   },
