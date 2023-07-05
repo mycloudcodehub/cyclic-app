@@ -1,11 +1,14 @@
 {
   "name": "cyclic-app",
-  "version": "1.0.0",
+  "version": "2.0.3",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "env-cmd nodemon index.js",
-    "repl": "env-cmd node"
+    "dev": "env-cmd -e dev nodemon index.js",
+    "repl": "env-cmd node",
+    "push": "node -r ./utils.js -e 'require(\"./utils\").version()'",
+    "add": "node -r ./utils.js -e 'require(\"./utils\").add()'",
+    "commit": "node -r ./utils.js -e 'require(\"./utils\").gitCommit()'"
   },
   "keywords": [],
   "author": "Faisal Md <faisalindex@gmail.com>",
