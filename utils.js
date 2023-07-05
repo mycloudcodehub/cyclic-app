@@ -126,16 +126,16 @@ async function buildAddCommitVersioningPush() {
 
     const filesMessage = [];
     if (modifiedFiles) {
-      filesMessage.push("Modified files:\n" + modifiedFiles);
+      filesMessage.push("Modified files:\n" + modifiedFiles.join('\n'));
     }
     if (deletedFiles) {
-      filesMessage.push("Deleted files:\n" + deletedFiles);
+      filesMessage.push("Deleted files:\n" + deletedFiles.join('\n'));
     }
     if (addedFiles) {
-      filesMessage.push("Added files:\n" + addedFiles);
+      filesMessage.push("Added files:\n" + addedFiles).join('\n');
     }
     if (createdFiles) {
-      filesMessage.push("Created files:\n" + createdFiles);
+      filesMessage.push("Created files:\n" + createdFiles.join('\n'));
     }
 
     const message = await prompt("Enter Commit Msg: ");
