@@ -114,29 +114,32 @@ async function buildAddCommitVersioningPush() {
     await runCommand("git add -A");
 
     const modifiedFiles = await runCommand(
-      "git diff --name-only --diff-filter=M"
+      "git diff --name-only --diff-filter=M --cached"
     );
     const deletedFiles = await runCommand(
-      "git diff --name-only --diff-filter=D"
+      "git diff --name-only --diff-filter=D --cached"
     );
-    const addedFiles = await runCommand("git diff --name-only --diff-filter=A");
+    const addedFiles = await runCommand("git diff --name-only --diff-filter=A --cached");
     const createdFiles = await runCommand(
-      "git ls-files --others --exclude-standard"
+      "git ls-files --others --exclude-standard --cached"
     );
 
     const filesMessage = [];
     if (modifiedFiles) {
-      filesMessage.push("Modified files:\n" + modifiedFiles.join('\n'));
+      filesMessage.push("Modified files:\n" + modifiedFiles);
     }
     if (deletedFiles) {
-      filesMessage.push("Deleted files:\n" + deletedFiles.join('\n'));
+      filesMessage.push("Deleted files:\n" + deletedFiles);
     }
     if (addedFiles) {
-      filesMessage.push("Added files:\n" + addedFiles).join('\n');
+      filesMessage.push("Added files:\n" + addedFiles);
     }
     if (createdFiles) {
-      filesMessage.push("Created files:\n" + createdFiles.join('\n'));
+      filesMessage.push("Created files:\n" + createdFiles);
     }
+
+    const p = await runCommand('pwd')
+    console.log("Loging..",filesMessage, p)
 
     const message = await prompt("Enter Commit Msg: ");
     const formatMsg = `Update #${newVersion} : ${message}`;
