@@ -19,6 +19,8 @@ const readline = require("readline");
 const readFileAsync = util.promisify(fs.readFile);
 const writeFileAsync = util.promisify(fs.writeFile);
 const exec = util.promisify(require("child_process").exec);
+const axios = require('axios');
+
 
 const colors = {
   reset: "\x1b[0m",
@@ -194,14 +196,12 @@ async function buildAddCommitVersioningPush() {
 async function gitPullWithConflictHandling() {
   try {
     // Execute git pull command
-    const { stdout, stderr } = await runCommand("git pull origin master", {
-      stdio: "inherit",
-    });
+    const { stdout, stderr } = await exec("git pull origin master");
 
     // Check if merge conflicts occurred
-    if (stdout.includes("CONFLICT")) {
+    if (stderr && stderr.includes("CONFLICT")) {
       console.log(
-        `${colors.red}Merge conflicts occurred. Please resolve them manually.${colors.reset}`
+        `${colors.red}Merge conflicts occurred. Please resolve them manually.${colors.reset}\n\n${stderr}`
       );
       const pushConfirmation = await prompt(
         `Fixed conflicts and then committed ? (Y/N)`
@@ -230,4 +230,13 @@ async function gitPullWithConflictHandling() {
   }
 }
 
-module.exports = { buildAddCommitVersioningPush };
+async function updateWebhook() {
+  try {
+    const response = await axios.post(`https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/setWebhook?url=${process.env.TELEGRAM_WEBHOOK}`);
+    console.log('Webhook update successful:', response.data);
+  } catch (error) {
+    console.error('Webhook update failed:', error.message);
+  }
+}
+
+module.exports = { buildAddCommitVersioningPush, updateWebhook };

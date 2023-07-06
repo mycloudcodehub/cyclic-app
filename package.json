@@ -1,6 +1,6 @@
 {
   "name": "cyclic-app",
-  "version": "2.0.24",
+  "version": "2.0.25",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -8,7 +8,8 @@
     "repl": "env-cmd node",
     "push": "node -r ./utils.js -e 'require(\"./utils\").buildAddCommitVersioningPush()'",
     "add": "node -r ./utils.js -e 'require(\"./utils\").add()'",
-    "commit": "node -r ./utils.js -e 'require(\"./utils\").gitCommit()'"
+    "commit": "node -r ./utils.js -e 'require(\"./utils\").gitCommit()'",
+    "update-webhook": "env-cmd -e prod node -r ./utils.js -e 'require(\"./utils\").updateWebhook()'"
   },
   "keywords": [],
   "author": "Faisal Md <faisalindex@gmail.com>",
@@ -17,6 +18,8 @@
   },
   "dependencies": {
     "@cyclic.sh/dynamodb": "^0.0.33",
+    "axios": "^1.4.0",
+    "ejs": "^3.1.9",
     "env-cmd": "^10.1.0",
     "express": "^4.18.1",
     "grammy": "^1.11.2",
