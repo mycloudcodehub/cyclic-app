@@ -232,7 +232,7 @@ async function gitPullWithConflictHandling() {
 
 async function updateWebhook() {
   try {
-    const response = await axios.post(`https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}/setWebhook?url=${process.env.TELEGRAM_WEBHOOK}`);
+    const response = await axios.post(`https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN_PROD}/setWebhook?url=${process.env.TELEGRAM_WEBHOOK_PROD}`);
     console.log('Webhook update successful:', response.data);
   } catch (error) {
     console.error('Webhook update failed:', error.message);

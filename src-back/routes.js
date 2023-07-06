@@ -47,6 +47,19 @@ app.use("/api", routes);
 // });
 // Catch all handler for all other request.
 
+router.get('/update-webhook', async (req, res) => {
+  try {
+    const TELEGRAM_TOKEN = process.env.TELEGRAM_TOKEN;
+    const TELEGRAM_WEBHOOK_FULL_URL = process.env.TELEGRAM_WEBHOOK_FULL_URL;
+
+    const response = await axios.post(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/setWebhook?url=${TELEGRAM_WEBHOOK_FULL_URL}`);
+
+    res.status(200).json({ message: 'Webhook updated successfully', response: response.data });
+  } catch (error) {
+    console.error('Webhook update failed:', error.message);
+    res.status(500).json({ error: 'Failed to update webhook' });
+  }
+});
 
 
 app.use("*", (req, res) => {
