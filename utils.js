@@ -174,7 +174,11 @@ async function buildAddCommitVersioningPush() {
       `${colors.green}Git commit and tag completed successfully.${colors.reset}`
     );
 
-    await runCommand(`git push origin master --follow-tags`, {stdio:"inherit"});
+    // await runCommand(`git push origin master --follow-tags`, {
+    //   stdio: "inherit",
+    // });
+
+    await gitPullWithConflictHandling();
 
     console.log(
       `${colors.green}'Git push origin master' completed successfully.${colors.reset}`
@@ -184,6 +188,45 @@ async function buildAddCommitVersioningPush() {
       `${colors.red}Git commit and tag failed:${colors.reset}`,
       error
     );
+  }
+}
+
+async function gitPullWithConflictHandling() {
+  try {
+    // Execute git pull command
+    const { stdout, stderr } = await runCommand("git pull origin master", {
+      stdio: "inherit",
+    });
+
+    // Check if merge conflicts occurred
+    if (stdout.includes("CONFLICT")) {
+      console.log(
+        `${colors.red}Merge conflicts occurred. Please resolve them manually.${colors.reset}`
+      );
+      const pushConfirmation = await prompt(
+        `Fixed conflicts and then committed ? (Y/N)`
+      );
+      if (pushConfirmation.toUpperCase() === "Y") {
+        await runCommand("git push origin master --follow-tags", { stdio: "inherit" });
+        console.log("Push successful.");
+      } else {
+        console.log("Push aborted by user.");
+      }
+      // return;
+    } else {
+      // No conflicts, continue with git push
+      const pushConfirmation = await prompt(
+        `No conflicts found. Do you want to push? (Y/N)`
+      );
+      if (pushConfirmation.toUpperCase() === "Y") {
+        await runCommand("git push origin master --follow-tags", { stdio: "inherit" });
+        console.log("Push successful.");
+      } else {
+        console.log("Push aborted by user.");
+      }
+    }
+  } catch (error) {
+    console.error("Error occurred while performing git commands:", error);
   }
 }
 
