@@ -1,6 +1,8 @@
 const CyclicDb = require("@cyclic.sh/dynamodb");
 const db = CyclicDb(process.env.CYCLIC_DB);
 
+
+
 module.exports = (app) => {
   // Create or Update an item
   app.post("/:col/:key", async (req, res) => {

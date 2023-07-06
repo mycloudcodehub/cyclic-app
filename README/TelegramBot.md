@@ -6,3 +6,5 @@
 export TELEGRAM_TOKEN= ... from .env`
 
 `curl "https://api.telegram.org/bot$TELEGRAM_TOKEN/setWebhook?url=$TELEGRAM_WEBHOOK_URL"`
+
+curl "https://api.telegram.org/bot$TELEGRAM_TOKEN/setWebhook?url=$TELEGRAM_WEBHOOK_URL"
